@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROXTER CRASHER V1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap');
+        
+        :root {
+            --primary: #6e48aa;
+            --secondary: #9d50bb;
+            --dark: #1a1a2e;
+            --danger: #e94560;
+            --success: #00b894;
+            --warning: #fdcb6e;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            color: #9d50bb;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(157, 80, 187, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .status {
+            text-align: center;
+            background: rgba(0, 184, 148, 0.2);
+            padding: 8px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            color: #00b894;
+            border: 1px solid rgba(0, 184, 148, 0.3);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(157, 80, 187, 0.3);
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            margin: 25px 0;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .feature-btn {
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.4s;
+            z-index: -1;
+        }
+        
+        .feature-btn:hover:after {
+            transform: translateX(100%);
+        }
+        
+        .feature-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .crash-android {
+            background: linear-gradient(135deg, var(--danger), #ff4757);
+            color: white;
+        }
+        
+        .crash-iphone {
+            background: linear-gradient(135deg, var(--warning), #ffa502);
+            color: #2d3436;
+        }
+        
+        .delay-invisible {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        /* Floating dialog */
+        .dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(157, 80, 187, 0.5);
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+        }
+        
+        .dialog.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .dialog h2 {
+            color: var(--success);
+            margin-top: 0;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .dialog-content {
+            margin: 20px 0;
+        }
+        
+        .dialog-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        
+        .dialog-label {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .dialog-value {
+            color: white;
+        }
+        
+        .close-dialog {
+            display: block;
+            margin: 0 auto;
+            padding: 8px 25px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close-dialog:hover {
+            background: #ff4757;
+            transform: translateY(-2px);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* Glow effect */
+        .glow {
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(157, 80, 187, 0.5);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(157, 80, 187, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ROXTER CRASHER V1</h1>
+        <p class="subtitle">Preview</p>
+        
+        <div class="status glow">
+            Server ONLINE
+        </div>
+        
+        <div class="input-group">
+            <label for="phone">Masukkan nomor WhatsApp target (format 628xxx):</label>
+            <input type="text" id="phone" placeholder="628xxxxxxxxx">
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="features">
+            <button class="feature-btn crash-android" id="crashAndroid">CrashAndroid</button>
+            <button class="feature-btn crash-iphone" id="crashIphone">CrashIphone</button>
+            <button class="feature-btn delay-invisible" id="delayInvisible">Delay Invisible</button>
+        </div>
+        
+        <div class="footer">
+            COMMUNITY ROXTER
+        </div>
+    </div>
+    
+    <!-- Floating Dialog -->
+    <div class="overlay" id="overlay"></div>
+    <div class="dialog" id="dialog">
+        <h2>SUCCESSFULLY BUG TO WHATSAPP</h2>
+        <div class="dialog-content">
+            <div class="dialog-item">
+                <span class="dialog-label">Target:</span>
+                <span class="dialog-value" id="dialog-number">6298826722</span>
+            </div>
+            <div class="dialog-item">
+                <span class="dialog-label">Fitur:</span>
+                <span class="dialog-value" id="dialog-feature">CrashAndroid</span>
+            </div>
+            <div class="dialog-item">
+                <span class="dialog-label">Time:</span>
+                <span class="dialog-value" id="dialog-time">30/6/2025, 22.12.57</span>
+            </div>
+        </div>
+        <button class="close-dialog" id="closeDialog">CLOSE</button>
+    </div>
+    
+    <script>
+        // Get current date and time
+        function getCurrentDateTime() {
+            const now = new Date();
+            const day = now.getDate();
+            const month = now.getMonth() + 1;
+            const year = now.getFullYear();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            return `${day}/${month}/${year}, ${hours}.${minutes}.${seconds}`;
+        }
+        
+        // Show dialog
+        function showDialog(feature) {
+            const phoneNumber = document.getElementById('phone').value || '6298826722';
+            const currentTime = getCurrentDateTime();
+            
+            document.getElementById('dialog-number').textContent = phoneNumber;
+            document.getElementById('dialog-feature').textContent = feature;
+            document.getElementById('dialog-time').textContent = currentTime;
+            
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('dialog').classList.add('active');
+        }
+        
+        // Close dialog
+        function closeDialog() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('dialog').classList.remove('active');
+        }
+        
+        // Event listeners
+        document.getElementById('crashAndroid').addEventListener('click', () => {
+            showDialog('CrashAndroid');
+        });
+        
+        document.getElementById('crashIphone').addEventListener('click', () => {
+            showDialog('CrashIphone');
+        });
+        
+        document.getElementById('delayInvisible').addEventListener('click', () => {
+            showDialog('Delay Invisible');
+        });
+        
+        document.getElementById('closeDialog').addEventListener('click', closeDialog);
+        document.getElementById('overlay').addEventListener('click', closeDialog);
+    </script>
+</body>
+</html>
